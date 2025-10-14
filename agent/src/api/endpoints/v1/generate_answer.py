@@ -106,6 +106,7 @@ async def extract_user_id_from_token(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
 
 
+
 # Extract the user_email from the token
 async def extract_user_email_from_token(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
