@@ -70,6 +70,8 @@ def get_runnable(llm, tools, agent_prompt):
         | prompt_template
         | llm.bind_tools(tools)
     )
+
+    
     # combine_runnable
     # combine_runnable = RunnableMap({
     #     "messages": lambda x: x["messages"],
