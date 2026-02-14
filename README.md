@@ -1,4 +1,4 @@
-# NeroChat.co.in - Medical AI Assistant Platform
+# NeroChat - Medical AI Assistant Platform
 
 An intelligent medical chatbot platform powered by AI agents, designed to help users find doctors, book appointments, and get medical information through natural language conversations.
 
