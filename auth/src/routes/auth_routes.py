@@ -19,7 +19,7 @@ oauth = OAuth(app)
 logging.basicConfig(level=logging.INFO)
 
 # Create an APIRouter for auth routes
-auth_router = APIRouter(prefix="/auth", tags=["auth"])
+auth_router = APIRouter(tags=["auth"])
 
 class EmailVerificationRequest(BaseModel):
     email: str

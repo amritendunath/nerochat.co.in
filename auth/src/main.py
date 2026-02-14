@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from dotenv import load_dotenv
 import uvicorn
 from datetime import timedelta
 from fastapi import FastAPI, Depends, Request
@@ -18,7 +19,7 @@ from utils.helpers import RouteUpdater
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 
-
+load_dotenv()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Set to DEBUG to capture more detailed logs
 handler = logging.StreamHandler(sys.stdout)
