@@ -43,6 +43,9 @@ class RouteUpdater:
 def create_entry_node(assistant_name: str, new_dialog_state: str) -> Callable:
     def entry_node(state: State) -> dict:
         tool_call_id = state["messages"][-1].tool_calls[0]["id"]
+        # OPENAI/OpenRouter limit: tool_call_id must be max 40 chars
+        if len(tool_call_id) > 40:
+            tool_call_id = tool_call_id[:40]
         return {
             "messages": [
                 ToolMessage(
@@ -65,9 +68,9 @@ def handle_tool_error(state) -> dict:
     tool_calls = state["messages"][-1].tool_calls
     return {
         "messages": [
-            ToolMessage(
+        ToolMessage(
                 content=f"Error: {repr(error)}\n please fix your mistakes.",
-                tool_call_id=tc["id"],
+                tool_call_id=tc["id"][:40] if len(tc["id"]) > 40 else tc["id"],
             )
             for tc in tool_calls
         ]
@@ -92,7 +95,7 @@ def pop_dialog_state(state: State) -> dict:
         messages.append(
             ToolMessage(
                 content="Resuming dialog with the host assistant. Please reflect on the past conversation and assist the user as needed.",
-                tool_call_id=state["messages"][-1].tool_calls[0]["id"],
+                tool_call_id=state["messages"][-1].tool_calls[0]["id"][:40] if len(state["messages"][-1].tool_calls[0]["id"]) > 40 else state["messages"][-1].tool_calls[0]["id"],
             )
         )
     return {
