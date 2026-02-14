@@ -9,6 +9,12 @@ class Assistant:
     def __call__(self, state: State, config: RunnableConfig):
         while True:
             result = self.runnable.invoke(state, config=config)
+            
+            # Truncate tool call IDs to 40 chars for OpenAI/OpenRouter compatibility
+            if hasattr(result, "tool_calls") and result.tool_calls:
+                for tc in result.tool_calls:
+                    if tc.get("id") and len(tc["id"]) > 40:
+                        tc["id"] = tc["id"][:40]
 
             if not result.tool_calls and (
                 not result.content
