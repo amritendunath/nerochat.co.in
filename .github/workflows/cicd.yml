@@ -133,7 +133,7 @@ jobs:
             REDIS_DB=${{ secrets.REDIS_DB }}
             REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
             
-            MONGODB_URI=${{ secrets.MONGODBURI }}
+            MONGODB_URI=${{ secrets.MONGODB_URI }}
             
             TWITTER_CLIENT_ID=${{ secrets.TWITTER_CLIENT_ID }}
             TWITTER_CLIENT_SECRET=${{ secrets.TWITTER_CLIENT_SECRET }}
