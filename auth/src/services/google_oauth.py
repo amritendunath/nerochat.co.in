@@ -107,6 +107,7 @@ class GoogleOAuth:
                 self.logger.error("JWT_SECRET is missing!")
                 jwt_secret = "fallback_secret_for_emergency" # Prevent crash
 
+
             access_token = jwt.encode(
                 claims={
                     "sub": user_info["email"],
