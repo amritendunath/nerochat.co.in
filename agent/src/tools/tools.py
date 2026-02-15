@@ -8,6 +8,9 @@ from typing import Dict, Any, Optional, List
 # from tools.vectorstore import get_retriever
 from langchain_chroma.vectorstores import chromadb
 import os
+from langchain_community.tools import DuckDuckGoSearchRun
+
+web_search_tool = DuckDuckGoSearchRun()
 
 
 chroma_host=os.environ.get("CHROMADB_HOST")

@@ -3,7 +3,7 @@ from models.generate_answer import GenerationResponse, GenerationRequest, ErrorR
 from fastapi.responses import JSONResponse, StreamingResponse
 from langchain_core.messages import HumanMessage
 from fastapi import FastAPI, HTTPException, Header
-from agents.builder import build_graph_quick, build_graph_think
+from agents.builder import build_graph_quick, build_graph_think, build_graph_web
 import logging
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -411,6 +411,13 @@ async def generation_streaming(
             dialog_state = dialog_states[
                 -1] if dialog_states else "primary_assistant"
             messages = response["messages"][-1].content
+        elif queryModeType == 'web_search':
+            graph = build_graph_web(quick_mode_llm, memory)
+            response = await graph.ainvoke(input=state, config=config)
+            logging.info("Generated Answer from Web Search Graph")
+            dialog_states = response.get("dialog_state")
+            dialog_state = dialog_states[-1] if dialog_states else "primary_assistant"
+            messages = response["messages"][-1].content
 
         await persist_chat_message(ehr_id, session_id, query, messages, database)
         return JSONResponse({
@@ -547,6 +554,8 @@ async def generation_streaming(
                 graph = build_graph_quick(quick_mode_llm, memory)
             elif queryModeType == 'think':
                 graph = build_graph_think(think_mode_llm, memory)
+            elif queryModeType == 'web_search':
+                graph = build_graph_web(quick_mode_llm, memory)
             full_msg_content = ""
             try:
                 async for msg, metadata in graph.astream(input_state, config, stream_mode="messages"):

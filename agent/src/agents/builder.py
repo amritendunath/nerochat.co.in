@@ -30,8 +30,10 @@ from tools.tools import (
     check_availability_by_doctor,
     find_nearby_hospital,
     get_doctor_info_by_hospital_name,
-    vector_tool
+    vector_tool,
+    web_search_tool
 )
+from langgraph.prebuilt import tools_condition
 from utils.helper import (
     create_entry_node,
     create_tool_node_with_fallback,
@@ -332,4 +334,26 @@ def build_graph_think(llm, memory) -> StateGraph:
     # Compile and Return Graph
     graph = builder.compile(checkpointer=memory)
     return graph
+
+
+def build_graph_web(llm, memory) -> StateGraph:
+    """Builds a graph for web search."""
+    web_tools = [web_search_tool]
+        
+    prompt = "You are a helpful assistant. Search the web to answer the user's query using the available tools. Summarize the results clearly and concisely."
+        
+    web_runnable = get_runnable(llm=llm, tools=web_tools, agent_prompt=prompt)
+        
+    builder = StateGraph(State)
+    builder.add_node("primary_assistant", Assistant(web_runnable))
+    builder.add_node("tools", create_tool_node_with_fallback(web_tools))
+        
+    builder.add_edge(START, "primary_assistant")
+    builder.add_conditional_edges(
+        "primary_assistant",
+        tools_condition,
+    )
+    builder.add_edge("tools", "primary_assistant")
+        
+    return builder.compile(checkpointer=memory)
 
